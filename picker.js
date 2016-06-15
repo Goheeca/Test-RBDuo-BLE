@@ -100,9 +100,9 @@ function ble(color) {
 		view.set(color)
 		return characteristic.writeValue(buffer)
 	})
-	.then(_ => {
-		device.gatt.disconnect()
-	})
+	//.then(_ => {
+	//	device.gatt.disconnect()
+	//})
 	//.catch(error => {
 	//})
 }

@@ -87,7 +87,7 @@ function ajax(color) {
 }
 
 function ble(color) {
-        device.gatt.connect()
+	device.gatt.connect()
 	.then(server => {
 		return server.getPrimaryService(serviceUUID)
 	})
@@ -95,7 +95,9 @@ function ble(color) {
 		return service.getCharacteristic(characteristicUUID)
 	})
 	.then(characteristic => {
-		let buffer = new Uint8Array(color)
+		let buffer = new ArrayBuffer(3)
+		let view = new Uint8Array(buffer)
+		view.set(color)
 		return characteristic.writeValue(buffer)
 	})
 	.then(_ => {

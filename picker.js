@@ -97,9 +97,10 @@ function ble(color) {
 		return service.getCharacteristic(characteristicUUID)
 	})
 	.then(characteristic => {
-                writePromise = characteristic.writeValue(color)
+		return characteristic.writeValue(color)
+	})
+	.then(_ => {
 		device.gatt.disconnect()
-		return writePromise
 	})
 	//.catch(error => {
 	//})

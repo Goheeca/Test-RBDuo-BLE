@@ -82,14 +82,6 @@ function ajax(color) {
 	sender.send()
 }
 
-function anyDevice() {
-  // This is the closest we can get for now to get all devices.
-  // https://github.com/WebBluetoothCG/web-bluetooth/issues/234
-  return Array.from('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
-      .map(c => ({namePrefix: c}))
-      .concat({name: ''});
-}
-
 function ble(color) {
         device.gatt.connect()
 	.then(server => {
@@ -99,8 +91,7 @@ function ble(color) {
 		return service.getCharacteristic(characteristicUUID)
 	})
 	.then(characteristic => {
-		var buffer = new Uint8Array(3)
-		buffer.set(color)
+		let buffer = new Uint8Array(color)
 		return characteristic.writeValue(buffer)
 	})
 	.then(_ => {
@@ -126,7 +117,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		drawPicker()
 	})
 	button.addEventListener("click", function (event) {
-		navigator.bluetooth.requestDevice({filters: anyDevice(), optionalServices: [serviceUUID]})
+		navigator.bluetooth.requestDevice({filters: [{services: [serviceUUID]}]})
 		.then(d => {
 			device = d
 		})

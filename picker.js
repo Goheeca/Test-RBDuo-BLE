@@ -109,26 +109,26 @@ document.addEventListener("DOMContentLoaded", function() {
 	resize()
 	drawPicker()	
 	
-	document.getElementById("outer").addEventListener("click", function () {
+	document.getElementById("outer").addEventListener("click", _ => {
 		togglePicker()
 	})
-	window.addEventListener("resize", function () {
+	window.addEventListener("resize", _ => {
 		resize()
 		drawPicker()
 	})
-	button.addEventListener("click", function (event) {
+	button.addEventListener("click", event => {
+		event.stopPropagation()
 		navigator.bluetooth.requestDevice({filters: [{services: [serviceUUID]}]})
 		.then(d => {
 			device = d
 		})
-		event.stopPropagation()
 	})
-	canvas.addEventListener("click", function (event) {
+	canvas.addEventListener("click", event => {
+		event.stopPropagation()
 		var color = pick(event)
 		if(color != null) {
 			//ajax(color)
 			ble(color)
 		}
-		event.stopPropagation()
 	})
 })

@@ -1,5 +1,9 @@
 'use strict'
 
+if (location.hostname.endsWith('.github.io') && location.protocol != 'https:') {
+	location.protocol = 'https:';
+}
+
 var canvas,
     button,
     dark,

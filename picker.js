@@ -121,6 +121,7 @@ document.addEventListener("DOMContentLoaded", function() {
 		.then(d => {
 			device = d
 		})
+		event.stopPropagation()
 	})
 	canvas.addEventListener("click", function (event) {
 		var color = pick(event)

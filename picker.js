@@ -1,6 +1,7 @@
 var canvas,
+    button,
     dark,
-    devicePromise,
+    device,
     serviceUUID = '5248ccfc-3290-11e6-ac61-9e71128cae77',
     characteristicUUID = 'ecc0e918-3290-11e6-ac61-9e71128cae77'
 
@@ -88,11 +89,7 @@ function anyDevice() {
 }
 
 function ble(color) {
-        var gattServer
-	devicePromise.then(device => {
-                gattServer = device.gatt
-		return device.gatt.connect()
-	})
+        device.gatt.connect()
 	.then(server => {
 		return server.getPrimaryService(serviceUUID)
 	})
@@ -101,17 +98,16 @@ function ble(color) {
 	})
 	.then(characteristic => {
                 writePromise = characteristic.writeValue(color)
-		gattServer.disconnect()
+		device.gatt.disconnect()
 		return writePromise
 	})
 	//.catch(error => {
 	//})
 }
-
-devicePromise = navigator.bluetooth.requestDevice({filters: anyDevice(), optionalServices: [serviceUUID]})
 	
 document.addEventListener("DOMContentLoaded", function() {
 	canvas = document.getElementById("colors")
+	button = document.getElementById("chooser")
 	dark = true
 	
 	resize()
@@ -123,6 +119,12 @@ document.addEventListener("DOMContentLoaded", function() {
 	window.addEventListener("resize", function () {
 		resize()
 		drawPicker()
+	})
+	button.addEventListener("click", function (event) {
+		navigator.bluetooth.requestDevice({filters: anyDevice(), optionalServices: [serviceUUID]})
+		.then(d => {
+			device = d
+		})
 	})
 	canvas.addEventListener("click", function (event) {
 		var color = pick(event)

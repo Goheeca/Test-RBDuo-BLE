@@ -1,3 +1,5 @@
+'use strict'
+
 var canvas,
     button,
     dark,
@@ -97,7 +99,9 @@ function ble(color) {
 		return service.getCharacteristic(characteristicUUID)
 	})
 	.then(characteristic => {
-		return characteristic.writeValue(color)
+		var buffer = new Uint8Array(3)
+		buffer.set(color)
+		return characteristic.writeValue(buffer)
 	})
 	.then(_ => {
 		device.gatt.disconnect()

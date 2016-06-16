@@ -104,7 +104,7 @@ function getCharacteristic(connectionPromise) {
 }
 
 function disconnect() {
-	setTimeout(() => device.gatt.disconnect(), 25)
+	setTimeout(() => device.gatt.disconnect(), 50)
 }
 
 function ble(color) {

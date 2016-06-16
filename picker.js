@@ -8,7 +8,6 @@ var canvas,
     button,
     dark,
     device,
-    characteristicPromise,
     serviceUUID = '5248ccfc-3290-11e6-ac61-9e71128cae77',
     characteristicUUID = 'ecc0e918-3290-11e6-ac61-9e71128cae77'
 
@@ -91,35 +90,27 @@ function setCharacteristicValue(characteristic, color) {
 	let buffer = new ArrayBuffer(3)
 	let view = new Uint8Array(buffer)
 	view.set(color)
-	characteristic.writeValue(buffer)
-	.then(_ => {
-		return new Promise(function (resolve, reject) {
-			setTimeout(resolve, 25)
-		})
-	})
-	.then(_ => {
-		device.gatt.disconnect()
-	})
+	return characteristic.writeValue(buffer)
 }
 
 function getCharacteristic(connectionPromise) {
-	if(typeof characteristicPromise == 'undefined') {
-		characteristicPromise = connectionPromise
-			.then(server => {
-				return server.getPrimaryService(serviceUUID)
-			})
-			.then(service => {
-				return service.getCharacteristic(characteristicUUID)
-			})
-	}
-	return characteristicPromise
+	return connectionPromise
+		.then(server => {
+			return server.getPrimaryService(serviceUUID)
+		})
+		.then(service => {
+			return service.getCharacteristic(characteristicUUID)
+		})
+}
+
+function disconnect() {
+	setTimeout(() => device.gatt.disconnect(), 25)
 }
 
 function ble(color) {
 	getCharacteristic(device.gatt.connect())
-	.then(characteristic => {
-		setCharacteristicValue(characteristic, color)
-	})
+	.then(characteristic => setCharacteristicValue(characteristic, color))
+	.then(_ => disconnect())
 }
 	
 document.addEventListener("DOMContentLoaded", function() {

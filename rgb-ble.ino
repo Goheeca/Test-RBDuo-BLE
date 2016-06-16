@@ -1,3 +1,5 @@
+#define BLUE_LED	D7
+
 /* 
  * BLE peripheral preferred connection parameters:
  *     - Minimum connection interval = MIN_CONN_INTERVAL * 1.25 ms, where MIN_CONN_INTERVAL ranges from 0x0006 to 0x0C80
@@ -122,6 +124,7 @@ void deviceConnectedCallback(BLEStatus_t status, uint16_t handle) {
   switch (status) {
     case BLE_STATUS_OK:
       Serial.println("Device connected!");
+      digitalWrite(BLUE_LED, HIGH);
       break;
     default: break;
   }
@@ -136,6 +139,7 @@ void deviceConnectedCallback(BLEStatus_t status, uint16_t handle) {
  */
 void deviceDisconnectedCallback(uint16_t handle) {
   Serial.println("Disconnected.");
+  digitalWrite(BLUE_LED, LOW);
 }
 
 /**
@@ -195,7 +199,8 @@ int gattWriteCallback(uint16_t value_handle, uint8_t *buffer, uint16_t size) {
  */
 void setup() {
   RGB.control(true);
-  
+  pinMode(BLUE_LED, OUTPUT);
+
   
   Serial.begin(115200);
   delay(5000);

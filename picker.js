@@ -104,7 +104,7 @@ function getCharacteristic(connectionPromise) {
 }
 
 function disconnect() {
-	if(keepConnected) {
+	if(!keepConnected) {
 		setTimeout(() => device.gatt.disconnect(), 50)
 	}
 }

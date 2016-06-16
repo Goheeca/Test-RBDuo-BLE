@@ -5,9 +5,9 @@ if (location.hostname.endsWith('.github.io') && location.protocol != 'https:') {
 }
 
 var canvas,
-    button,
     dark,
     device,
+    keepConnected = false,
     serviceUUID = '5248ccfc-3290-11e6-ac61-9e71128cae77',
     characteristicUUID = 'ecc0e918-3290-11e6-ac61-9e71128cae77'
 
@@ -104,7 +104,9 @@ function getCharacteristic(connectionPromise) {
 }
 
 function disconnect() {
-	setTimeout(() => device.gatt.disconnect(), 50)
+	if(keepConnected) {
+		setTimeout(() => device.gatt.disconnect(), 50)
+	}
 }
 
 function ble(color) {
@@ -115,9 +117,10 @@ function ble(color) {
 	
 document.addEventListener("DOMContentLoaded", function() {
 	canvas = document.getElementById("colors")
-	button = document.getElementById("chooser")
 	dark = true
-	
+	var button = document.getElementById("chooser")
+	var keep = document.getElementById("keep")
+
 	resize()
 	drawPicker()	
 	
@@ -134,6 +137,9 @@ document.addEventListener("DOMContentLoaded", function() {
 		.then(d => {
 			device = d
 		})
+	})
+	keep.addEventListener("change", event => {
+		keepConnected = event.target.checked
 	})
 	canvas.addEventListener("click", event => {
 		event.stopPropagation()

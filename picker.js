@@ -8,6 +8,7 @@ var canvas,
     button,
     dark,
     device,
+    characteristicPromise,
     serviceUUID = '5248ccfc-3290-11e6-ac61-9e71128cae77',
     characteristicUUID = 'ecc0e918-3290-11e6-ac61-9e71128cae77'
 
@@ -86,25 +87,39 @@ function ajax(color) {
 	sender.send()
 }
 
+function setCharacteristicValue(characteristic, color) {
+	let buffer = new ArrayBuffer(3)
+	let view = new Uint8Array(buffer)
+	view.set(color)
+	characteristic.writeValue(buffer)
+	.then(_ => {
+		return new Promise(function (resolve, reject) {
+			setTimeout(resolve, 25)
+		})
+	})
+	.then(_ => {
+		device.gatt.disconnect()
+	})
+}
+
+function getCharacteristic(connectionPromise) {
+	if(typeof characteristicPromise == 'undefined') {
+		characteristicPromise = connectionPromise
+			.then(server => {
+				return server.getPrimaryService(serviceUUID)
+			})
+			.then(service => {
+				return service.getCharacteristic(characteristicUUID)
+			})
+	}
+	return characteristicPromise
+}
+
 function ble(color) {
-	device.gatt.connect()
-	.then(server => {
-		return server.getPrimaryService(serviceUUID)
-	})
-	.then(service => {
-		return service.getCharacteristic(characteristicUUID)
-	})
+	getCharacteristic(device.gatt.connect())
 	.then(characteristic => {
-		let buffer = new ArrayBuffer(3)
-		let view = new Uint8Array(buffer)
-		view.set(color)
-		return characteristic.writeValue(buffer)
+		setCharacteristicValue(characteristic, color)
 	})
-	//.then(_ => {
-	//	device.gatt.disconnect()
-	//})
-	//.catch(error => {
-	//})
 }
 	
 document.addEventListener("DOMContentLoaded", function() {

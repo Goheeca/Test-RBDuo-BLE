@@ -113,6 +113,8 @@ body {
 }
 .onoffswitch-checkbox:checked + .onoffswitch-label:before {
     right: 0px;
-    background-color: #2196F3;
     box-shadow: 3px 6px 18px 0px rgba(0, 0, 0, 0.2);
+}
+.onoffswitch-label.connected:before {
+    background-color: #2196F3;
 }

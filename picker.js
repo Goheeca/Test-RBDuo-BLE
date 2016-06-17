@@ -8,6 +8,7 @@ var canvas,
     dark = true,
     device = null,
     keepConnected = false,
+    flipSwitch,
     serviceUUID = '5248ccfc-3290-11e6-ac61-9e71128cae77',
     characteristicUUID = 'ecc0e918-3290-11e6-ac61-9e71128cae77'
 
@@ -86,6 +87,14 @@ function ajax(color) {
 	sender.send()
 }
 
+function indicateConnection() {
+	if(device.gatt.connected) {
+		flipSwitch.classList.add('connected')
+	} else {
+		flipSwitch.classList.remove('connected')
+	}
+}
+
 function setCharacteristicValue(characteristic, color) {
 	let buffer = new ArrayBuffer(3)
 	let view = new Uint8Array(buffer)
@@ -103,20 +112,34 @@ function getCharacteristic(connectionPromise) {
 		})
 }
 
+function connect() {
+	return device.gatt.connect()
+		.then(connection => {
+			indicateConnection()
+			return Promise.resolve(connection)
+		})
+}
+
 function disconnect() {
+	device.gatt.disconnect()
+	.then(_ => indicateConnection())
+}
+
+function delayedDisconnect() {
 	if(!keepConnected) {
-		setTimeout(() => device.gatt.disconnect(), 50)
+		setTimeout(() => disconnect(), 50)
 	}
 }
 
 function ble(color) {
-	getCharacteristic(device.gatt.connect())
+	getCharacteristic(connect())
 	.then(characteristic => setCharacteristicValue(characteristic, color))
-	.then(_ => disconnect())
+	.then(_ => delayedDisconnect())
 }
 	
 document.addEventListener("DOMContentLoaded", function() {
 	canvas = document.getElementById("colors")
+	flipSwitch = document.getElementById("switch")
 	var button = document.getElementById("chooser")
 	var keep = document.getElementById("keep")
 
@@ -135,15 +158,21 @@ document.addEventListener("DOMContentLoaded", function() {
 		navigator.bluetooth.requestDevice({filters: [{services: [serviceUUID]}]})
 		.then(d => {
 			device = d
+			device.addEventListener("gattserverdisconnected", _ => {
+				indicateConnection()
+				if(keepConnected) {
+					connect()
+				}
+			})
 		})
 	})
 	keep.addEventListener("change", event => {
 		keepConnected = event.target.checked
 		if(device != null) {
 			if(keepConnected) {
-				device.gatt.connect()
+				connect()
 			} else {
-				device.gatt.disconnect()
+				disconnect()
 			}
 		}
 	})

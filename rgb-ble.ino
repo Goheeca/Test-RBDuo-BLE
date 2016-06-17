@@ -10,7 +10,7 @@
 #define MIN_CONN_INTERVAL          0x0028 // 50ms.
 #define MAX_CONN_INTERVAL          0x0190 // 500ms.
 #define SLAVE_LATENCY              0x0000 // No slave latency.
-#define CONN_SUPERVISION_TIMEOUT   0x03E8 // 10s.
+#define CONN_SUPERVISION_TIMEOUT   0x0064 // 1s.
 
 // https://developer.bluetooth.org/gatt/characteristics/Pages/CharacteristicViewer.aspx?u=org.bluetooth.characteristic.gap.appearance.xml
 #define BLE_PERIPHERAL_APPEARANCE  BLE_APPEARANCE_GENERIC_REMOTE_CONTROL

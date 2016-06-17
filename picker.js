@@ -122,7 +122,7 @@ function connect() {
 
 function disconnect() {
 	device.gatt.disconnect()
-	.then(_ => indicateConnection())
+	indicateConnection()
 }
 
 function delayedDisconnect() {

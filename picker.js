@@ -186,10 +186,12 @@ document.addEventListener("DOMContentLoaded", _ => {
 		}
 	})
 	canvas.addEventListener("touchmove", event => {
-		var color = pick(event.targetTouches[0])
-		if(color != null) {
-			//ajax(color)
-			ble(color)
+		if(keepConnected) {
+			var color = pick(event.targetTouches[0])
+			if(color != null) {
+				//ajax(color)
+				ble(color)
+			}
 		}
 	})
 	window.addEventListener("mousedown", _ => {

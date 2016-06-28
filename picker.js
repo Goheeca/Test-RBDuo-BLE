@@ -184,4 +184,11 @@ document.addEventListener("DOMContentLoaded", function() {
 			ble(color)
 		}
 	})
+	canvas.addEventListener("touchmove", event => {
+		var color = pick(event.targetTouches[0])
+		if(color != null) {
+			//ajax(color)
+			ble(color)
+		}
+	})
 })

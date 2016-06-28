@@ -199,7 +199,7 @@ document.addEventListener("DOMContentLoaded", _ => {
 		mouse = false
 	})
 	canvas.addEventListener("mousemove", event => {
-		if(mouse) {
+		if(mouse && keepConnected) {
 			var color = pick(event)
 			if(color != null) {
 				//ajax(color)

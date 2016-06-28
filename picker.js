@@ -4,7 +4,8 @@ if (location.hostname.endsWith('.github.io') && location.protocol != 'https:') {
 	location.protocol = 'https:';
 }
 
-var canvas,
+var mouse = false,
+    canvas,
     dark = true,
     device = null,
     keepConnected = false,
@@ -137,7 +138,7 @@ function ble(color) {
 	.then(_ => delayedDisconnect())
 }
 	
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", _ => {
 	canvas = document.getElementById("colors")
 	flipSwitch = document.getElementById("switch")
 	var button = document.getElementById("chooser")
@@ -189,6 +190,21 @@ document.addEventListener("DOMContentLoaded", function() {
 		if(color != null) {
 			//ajax(color)
 			ble(color)
+		}
+	})
+	window.addEventListener("mousedown", _ => {
+		mouse = true
+	})
+	window.addEventListener("mouseup", _ => {
+		mouse = false
+	})
+	canvas.addEventListener("mousemove", event => {
+		if(mouse) {
+			var color = pick(event)
+			if(color != null) {
+				//ajax(color)
+				ble(color)
+			}
 		}
 	})
 })
